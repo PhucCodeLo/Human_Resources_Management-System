@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Resources Management System</title>
+    <style>
+        #start-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        #start-button:hover {
+            background-color: #5e635f;
+        }
+
+        #progress-bar-container {
+            width: 100%;
+            background-color: #ddd;
+            position: relative;
+            height: 20px; /* Độ cao của thanh tiến trình */
+            border-radius: 8px;
+            margin-top: 10px; /* Khoảng cách giữa nút và thanh tiến trình */
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #4caf50;
+            position: absolute;
+            border-radius: 8px;
+            transition: width 20s linear;
+        }
+
+        #result-image {
+            border: 1px solid #000;
+            display: none;
+            float: right; /* Chuyển ảnh sang bên phải */
+            margin-left: 10px; /* Khoảng cách giữa video và ảnh */
+        }
+    </style>
+
+<style>
+    #registration-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    #registration-button:hover {
+        background-color: #5e635f;
+    }
+</style>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Human Resources Management System</h1>
+    <video id="video-feed" width="640" height="480" style="border:1px solid #000;" autoplay></video>
+    <button id="start-button">Ấn để xác thực</button>
+    <img id="result-image" width="600" height="480" style="border:1px solid #000; display: none;">
+    <div id="loading-container" style="display: none;">
+        <p id="loading-message"> Ảnh khuôn mặt đã được chụp.
+            Hệ thống đang xử lí...</p>
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            var video = document.getElementById('video-feed');
+            var startButton = document.getElementById('start-button');
+            var resultImage = document.getElementById('result-image');
+            var loadingContainer = document.getElementById('loading-container');
+            var loadingMessage = document.getElementById('loading-message');
+            var progressBarContainer = document.getElementById('progress-bar-container');
+            var progressBar = document.getElementById('progress-bar');
+    
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error('Error accessing webcam:', error);
+                });
+    
+            startButton.addEventListener('click', function() {
+                loadingContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+    
+                // Thêm hiệu ứng nháy sáng
+                video.style.transition = 'filter 0.1s ease-in-out';
+                video.style.filter = 'brightness(150%)';
+                setTimeout(function() {
+                    video.style.filter = 'brightness(100%)';
+                }, 50);
+    
+                var canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                var context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+                var imageDataUrl = canvas.toDataURL('image/jpeg');
+    
+                $.ajax({
+                    type: 'POST',
+                    url: '/recognize',
+                    data: {image_data: imageDataUrl},
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt){
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                progressBar.style.width = percentComplete * 100 + '%';
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response) {
+                        resultImage.src = 'data:image/jpeg;base64,' + response.image_data;
+                        resultImage.style.display = 'block';
+                        loadingContainer.style.display = 'none';
+                        resultImage.style.float = 'right'; // Đặt vị trí của ảnh khi hiển thị
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
+
+<br>
+
+<div>
+    <h2>Tính năng dành cho nhà quản lí:</h2>
+</div>
+
+<!-- Nút chuyển hướng đến trang page1 -->
+<div>
+    <a id="registration-button" href="{{ url_for('page1') }}">Face registration</a>
+</div>
