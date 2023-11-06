@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login History</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,14 +51,14 @@
     <p style="color: red;">{{ error }}</p>
 {% endif %}
 
-<form action="{{ url_for('face_registration') }}" method="post">
+<form action="{{ url_for('download_history') }}" method="post">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
 
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
 
-    <button type="submit">Login</button>
+    <button type="submit">Download Excel</button>
 </form>
 
 </body>

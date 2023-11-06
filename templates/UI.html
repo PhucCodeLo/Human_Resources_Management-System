@@ -1,85 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Set the character set and viewport for the page -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Human Resources Management System</title>
+    <title>Human Resources Management System</title>  <!-- Set the title of the page -->
+
+    <!-- Style for the result image -->
     <style>
-        #start-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-
-        #start-button:hover {
-            background-color: #5e635f;
-        }
-
-        #progress-bar-container {
-            width: 100%;
-            background-color: #ddd;
-            position: relative;
-            height: 20px; /* Độ cao của thanh tiến trình */
-            border-radius: 8px;
-            margin-top: 10px; /* Khoảng cách giữa nút và thanh tiến trình */
-        }
-
-        #progress-bar {
-            height: 100%;
-            width: 0;
-            background-color: #4caf50;
-            position: absolute;
-            border-radius: 8px;
-            transition: width 20s linear;
-        }
-
         #result-image {
-            border: 1px solid #000;
-            display: none;
-            float: right; /* Chuyển ảnh sang bên phải */
-            margin-left: 10px; /* Khoảng cách giữa video và ảnh */
+            border: 1px solid #000; /* Set border style for the image */
+            display: none; /* Initially hide the image */
+            float: right; /* Move the image to the right */
+            margin-left: 10px; /* Set the distance between video and result image */
         }
     </style>
 
-<style>
-    #registration-button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
+    <!-- Style for the registration-button -->
+    <style>
+        #registration-button {
+            background-color: #4CAF50;  /* Set the background color for the button */
+            color: white;  /* Set the text color for the button */
+            border: none;  /* Remove border from the button */
+            padding: 10px 20px;  /* Set padding for the button */
+            text-align: center;  /* Center-align the text in the button */
+            text-decoration: none;  /* Remove text decoration */
+            display: inline-block;  /* Display the button as an inline block element */
+            font-size: 16px;  /* Set the font size for the button text */
+            margin: 4px 2px;  /* Set margin for the button */
+            cursor: pointer;  /* Set cursor style to pointer */
+            border-radius: 5px;  /* Set border radius for rounded corners */
+            transition: background-color 0.3s;  /* Add transition effect for background color */
+        }
 
-    #registration-button:hover {
-        background-color: #5e635f;
-    }
-</style>
+        #registration-button:hover {
+            background-color: #5e635f;  /* Set the background color when hovering over the button */
+        }
+    </style>
 
+    <!-- Style for the export-access-history-button -->
+    <style>
+        #export-access-history {
+            background-color: #4CAF50;  /* Set the background color for the button */
+            color: white;  /* Set the text color for the button */
+            border: none;  /* Remove border from the button */
+            padding: 10px 20px;  /* Set padding for the button */
+            text-align: center;  /* Center-align the text in the button */
+            text-decoration: none;  /* Remove text decoration */
+            display: inline-block;  /* Display the button as an inline block element */
+            font-size: 16px;  /* Set the font size for the button text */
+            margin: 4px 2px;  /* Set margin for the button */
+            cursor: pointer;  /* Set cursor style to pointer */
+            border-radius: 5px;  /* Set border radius for rounded corners */
+            transition: background-color 0.3s;  /* Add transition effect for background color */
+        }
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        #export-access-history:hover {
+            background-color: #5e635f;  /* Set the background color when hovering over the button */
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> <!-- Include jQuery library -->
+
 </head>
 <body>
     <h1>Human Resources Management System</h1>
-    <video id="video-feed" width="640" height="480" style="border:1px solid #000;" autoplay></video>
-    <button id="start-button">Ấn để xác thực</button>
-    <img id="result-image" width="600" height="480" style="border:1px solid #000; display: none;">
-    <div id="loading-container" style="display: none;">
+    <video id="video-feed" width="640" height="480" style="border:1px solid #000;" autoplay></video> <!-- Video element for webcam feed -->
+    <img id="result-image" width="640" height="480" style="border:1px solid #000; display: none;"> <!-- Image element for displaying the processed image -->
+    <div id="loading-container" style="display: none;"> <!-- Container for loading message and progress bar -->
         <p id="loading-message"> Ảnh khuôn mặt đã được chụp.
             Hệ thống đang xử lí...</p>
         <div id="progress-bar-container">
@@ -88,77 +76,101 @@
     </div>
 
     <script>
-        $(document).ready(function(){
-            var video = document.getElementById('video-feed');
-            var startButton = document.getElementById('start-button');
-            var resultImage = document.getElementById('result-image');
-            var loadingContainer = document.getElementById('loading-container');
-            var loadingMessage = document.getElementById('loading-message');
-            var progressBarContainer = document.getElementById('progress-bar-container');
-            var progressBar = document.getElementById('progress-bar');
+        $(document).ready(function(){ //<!-- jQuery document ready function -->
+            var video = document.getElementById('video-feed'); //Get video element by ID
+            var resultImage = document.getElementById('result-image'); //Get result image element by ID
+            var loadingContainer = document.getElementById('loading-container'); //Get loading container by ID
+            var progressBarContainer = document.getElementById('progress-bar-container'); //Get progress bar container by ID
+            var progressBar = document.getElementById('progress-bar'); //Get progress bar element by ID
+            var processingFlag = false; //Control flag for processing state
     
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia({ video: true }) //Access webcam
                 .then(function(stream) {
-                    video.srcObject = stream;
+                    video.srcObject = stream; //Set video source to webcam stream
+                    autoCaptureAndRecognize(); //Call function to automatically capture and recognize faces
                 })
                 .catch(function(error) {
-                    console.error('Error accessing webcam:', error);
+                    console.error('Error accessing webcam:', error);  //Log error if webcam access fails
                 });
-    
-            startButton.addEventListener('click', function() {
-                loadingContainer.style.display = 'block';
-                progressBar.style.width = '0%';
-    
-                // Thêm hiệu ứng nháy sáng
-                video.style.transition = 'filter 0.1s ease-in-out';
-                video.style.filter = 'brightness(150%)';
-                setTimeout(function() {
-                    video.style.filter = 'brightness(100%)';
-                }, 50);
-    
-                var canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                var context = canvas.getContext('2d');
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-                var imageDataUrl = canvas.toDataURL('image/jpeg');
-    
-                $.ajax({
-                    type: 'POST',
-                    url: '/recognize',
-                    data: {image_data: imageDataUrl},
-                    xhr: function() {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener("progress", function(evt){
-                            if (evt.lengthComputable) {
-                                var percentComplete = evt.loaded / evt.total;
-                                progressBar.style.width = percentComplete * 100 + '%';
+
+            function autoCaptureAndRecognize() { 
+                setInterval(function() { // Set interval for periodic face recognition
+                    if (!processingFlag) {
+                        loadingContainer.style.display = 'block'; //Display loading container
+                        progressBar.style.width = '0%';
+        
+                        var canvas = document.createElement('canvas'); //Create a canvas element for drawing webcam feed
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        var context = canvas.getContext('2d');
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw webcam feed on the canvas
+        
+                        var imageDataUrl = canvas.toDataURL('image/jpeg'); //Convert canvas content to JPEG image data
+        
+                        $.ajax({
+                            type: 'POST',
+                            url: '/recognize', //Send POST request to the '/recognize' endpoint
+                            data: {image_data: imageDataUrl},
+                            xhr: function() {
+                                var xhr = new window.XMLHttpRequest();
+                                xhr.upload.addEventListener("progress", function(evt){
+                                    if (evt.lengthComputable) {
+                                        var percentComplete = evt.loaded / evt.total;
+                                        progressBar.style.width = percentComplete * 100 + '%';
+                                    }
+                                }, false);
+                                return xhr;
+                            },
+                            success: function(response) {
+                                resultImage.src = 'data:image/jpeg;base64,' + response.image_data; //Set result image source with processed image data
+                                resultImage.style.display = 'block'; //Display the result image
+                                loadingContainer.style.display = 'none'; //Hide loading container
+                                resultImage.style.float = 'right'; //Set the position of the image when displayed
+                                processingFlag = false; //Mark the end of processing
                             }
-                        }, false);
-                        return xhr;
-                    },
-                    success: function(response) {
-                        resultImage.src = 'data:image/jpeg;base64,' + response.image_data;
-                        resultImage.style.display = 'block';
-                        loadingContainer.style.display = 'none';
-                        resultImage.style.float = 'right'; // Đặt vị trí của ảnh khi hiển thị
+                        });
+
+                        processingFlag = true; //Mark the start of processing
                     }
-                });
-            });
+                }, 2000); //Set the interval duration to 2000 milliseconds (2 seconds)
+            }
         });
     </script>
-    
 </body>
 </html>
 
-<br>
 
+<!-- Header for admin features -->
 <div>
     <h2>Tính năng dành cho nhà quản lí:</h2>
 </div>
 
-<!-- Nút chuyển hướng đến trang page1 -->
-<div>
-    <a id="registration-button" href="{{ url_for('page1') }}">Face registration</a>
+<!-- Style for the button container -->
+<style>
+    .button-container {
+        display: flex;
+        justify-content: left; /* Align buttons to the left within the container */
+    }
+
+    #registration-button,
+    #export-access-history {
+        margin: 5px; /* Margin between buttons */
+    }
+</style>
+
+
+<!-- Container holding both buttons and centering them -->
+<div class="button-container">
+    <!-- Button to navigate to the face registration page -->
+    <div>
+        <a id="registration-button" href="{{ url_for('face_registration') }}">Face registration</a>
+    </div>
+
+    <!--  Button to export access history, linking to the corresponding route -->
+    <div>
+        <a id="export-access-history" href="{{ url_for('download_history') }}">Export Access History</a>
+    </div>
 </div>
+
+
+
